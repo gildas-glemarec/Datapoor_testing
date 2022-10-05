@@ -17,7 +17,7 @@ Generate_scenario_data <- function(Sim_Settings, seed_input = 123, parallel = FA
 
 	#### Set the pop mvt param from the simulation settings for each season (here month)
 	Par_mvt_adult <- lapply(1:12, function(x)
-	  rbind(Sim_Settings$Fish_dist_par1, Sim_Settings$Fish_dist_par2, Sim_Settings$Fish_depth_par1[x,], Sim_Settings$Fish_depth_par2[x,], Sim_Settings$Fish_range_par1, Sim_Settings$Fish_range_par2));
+	  rbind(Sim_Settings$Fish_dist_par1[x,], Sim_Settings$Fish_dist_par2, Sim_Settings$Fish_depth_par1[x,], Sim_Settings$Fish_depth_par2[x,], Sim_Settings$Fish_range_par1, Sim_Settings$Fish_range_par2));
 
 	#### Calculate the movement matrices
 	if (Sim_Settings$parallel == FALSE) Mvt_mat_adult <- lapply(1:12, function(x)
