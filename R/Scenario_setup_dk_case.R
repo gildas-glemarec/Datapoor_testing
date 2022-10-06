@@ -16,18 +16,30 @@ Sim1 <- list(
   # depth.restriction = c(50,150),	# location of MPA
 
   ### Species parameters
-  n_species  = 8, ## Alcidae, S. mollissima, Porpoise, cod, plaice, lumpsucker, turbot
+  n_species  = 7, ## Alcidae, S. mollissima, Porpoise, cod, plaice, lumpsucker, turbot
   ## Note that for cod, the differences between the stocks are important to take
   ## into account, so it might be preferable to limit the study area to e.g., the
   ## Western Baltic (incl. Kattegat)
   price_fish = matrix(rep(c(-1,-1,-50,25,10,40,40),15), ncol=7, byrow=T),   # random
 
   ## Fish habitat preference/movement control parameters
-  func_mvt_dist = c("Exp", "Exp", "Exp", "Exp", "Exp", "Exp", "Exp", "Exp"),					# shape of mvt p_function
-  func_mvt_depth = c("Lognorm", "Lognorm", "Lognorm", "Lognorm","Lognorm", "Lognorm", "Lognorm", "Lognorm"),	# shape of depth preference p_function (choice of Normal, Exp, Lognormal, Uniform)
-  func_mvt_lat = c("Unif", "Unif", "Unif", "Unif", "Unif", "Unif", "Unif", "Unif"),					# shape of range preference p_function (choice of Normal, Exp, Lognormal, Uniform)
+  func_mvt_dist = c("Exp", "Exp", "Exp", "Exp", "Exp", "Exp", "Exp"),					# shape of mvt p_function
+  func_mvt_depth = c("Lognorm", "Lognorm", "Lognorm", "Lognorm","Lognorm",  "Lognorm", "Lognorm"),	# shape of depth preference p_function (choice of Normal, Exp, Lognormal, Uniform)
+  func_mvt_lat = c("Unif", "Unif", "Unif", "Unif", "Unif", "Unif", "Unif"),					# shape of range preference p_function (choice of Normal, Exp, Lognormal, Uniform)
 
-  Fish_dist_par1 = c(rep(0, 7), 3),							# mvt distance mean - their mobility within time step
+  Fish_dist_par1 =  matrix(c(3,1,4,2,2,1,2, # mvt distance mean - their mobility within month1 only values >0
+                             3,1,4,2,2,1,2, # month2   only values >0
+                             3,1,4,2,2,1,2, # month3   only values >0
+                             2,30,4,2,2,5,2, # month4   only values >0
+                             1,30,2,2,2,10,2, # month5   only values >0
+                             1,30,2,2,2,10,2, # month6   only values >0
+                             1,30,2,2,2,10,2, # month7   only values >0
+                             1,1,2,2,2,10,2, # month8   only values >0
+                             2,1,2,2,2,10,2, # month9   only values >0
+                             3,10,4,2,2,10,2, # month10  only values >0
+                             3,5,4,2,2,5,2, # month11  only values >0
+                             3,3,4,2,2,1,2),# month12  only values >0
+                           nrow=12, ncol=7, byrow=T),
   Fish_depth_par1 = matrix(c(25, 5, 20, 20, 20, 50, 100,  # depth preference mean per month 1
                              25, 5, 20, 20, 20, 30, 100,   # month2
                              25, 5, 20, 20, 20, 10, 100,   # month3
@@ -40,7 +52,7 @@ Sim1 <- list(
                              25, 5, 20, 20, 25, 100, 100,  # month10
                              25, 5, 20, 20, 20, 100, 100,  # month11
                              25, 5, 20, 20, 20, 50, 100),  # month12
-                           nrow=12, ncol=8, byrow=T),
+                           nrow=12, ncol=7, byrow=T),
   ## Check the Excel sheet to update the values (note that it's SD(log()))
   Fish_depth_par2 = matrix(c(2, 0.5, 1, 1, 0.5, 0.5, 1,# depth preference sd log scale per month 1
                              2, 0.5, 1, 1, 0.5, 0.5, 1,# month2
@@ -72,7 +84,7 @@ Sim1 <- list(
   Rangeshift_distance = c(40,50,10,0,0,50,10),   # 0 if the species does not perform any range shift
 
   ## Species Schaefer pop dyn parameters
-  B0 = c(76500,333500,23492000,230000000,100000,4163000)*1000,	# based on values in XL
+  B0 = c(76500,333500,10000,23492000,230000000,100000,4163000)*1000,	# based on values in XL
   r = c(0.06622516556, 0.111111111, 0.1333333333, 0.07407407407, 0.2222222222, 0.2857142857, 0.1785714286)/12,     # based on values in XL
   sigma_p= c(0.65, 0.4, 0.4, 0.89, 0.4, 0.4, 0.4),           # based on values in XL
   sigma_p_timing= c(4,5,7,1,3,2,7),                        # based on values in XL

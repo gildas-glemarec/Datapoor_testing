@@ -14,13 +14,15 @@ rm(list=ls())
 gc()
 
 #### Loading libraries
-pacman::p_load(parallel, MASS, RandomFields, fields, geoR, gtools, tweedie, ggplot2, tidyverse, ggnewscale, TMB, TMBhelper, sdmTMB)
+pacman::p_load(parallel, MASS, RandomFields, fields, geoR, gtools, tweedie,
+               ggplot2, tidyverse, ggnewscale, TMB, TMBhelper, sdmTMB)
 
 
 #### sourcing codes
+setwd("H:/GitHub/Datapoor_testing")
 	source("R/Generate_scenario_data.R")  ## File that runs the simulation
   source("R/Functions.R")               ## File that include the main functions that are called in various part of the simulation
-  source("R/Scenario_setup.R")            ## The main file to set-up the operating model i.e. configuring the population parameters and the fleet dynamics
+  source("R/Scenario_setup_dk_case.R")            ## The main file to set-up the operating model i.e. configuring the population parameters and the fleet dynamics
 
 
 	# some ideas of setting
