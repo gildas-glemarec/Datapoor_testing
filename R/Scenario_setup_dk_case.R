@@ -84,7 +84,7 @@ Sim1 <- list(
   Rangeshift_distance = c(40,50,10,0,0,50,10),   # 0 if the species does not perform any range shift
 
   ## Species Schaefer pop dyn parameters
-  B0 = c(76500,333500,10000,23492000,230000000,100000,4163000)*1000,	# based on values in XL
+  B0 = c(76500,333500,100000,23492000,230000000,100000,4163000)*1000,	# based on values in XL
   r = c(0.06622516556, 0.111111111, 0.1333333333, 0.07407407407, 0.2222222222, 0.2857142857, 0.1785714286)/12,     # based on values in XL
   sigma_p= c(0.65, 0.4, 0.4, 0.89, 0.4, 0.4, 0.4),           # based on values in XL
   sigma_p_timing= c(4,5,7,1,3,2,7),                        # based on values in XL
