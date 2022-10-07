@@ -31,7 +31,8 @@ setwd("H:/GitHub/Datapoor_testing")
 	Sim2 <- Sim1
 	Sim2$SD_O = 150
 	Sim2$SpatialScale = 15
-	Sim2$sigma_p= c(1, 1, 1, 0.5)
+	Sim2$sigma_p= c(0.65, 0.4, 0.4, ## Alcids, Eider, Porpoise
+	                0.89, 0.4, 0.4, 0.4) ## Cod, Plaice, Lumpsucker, Turbot
 	Sim2$CV_vessel= 0.1
 
 	## Running the simulation model with the user-specified configurations

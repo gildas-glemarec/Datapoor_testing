@@ -84,19 +84,25 @@ Sim1 <- list(
   Rangeshift_distance = c(40,50,10,0,0,50,10),   # 0 if the species does not perform any range shift
 
   ## Species Schaefer pop dyn parameters
-  B0 = c(76500,333500,100000,23492000,230000000,100000,4163000)*1000,	# based on values in XL
-  r = c(0.06622516556, 0.111111111, 0.1333333333, 0.07407407407, 0.2222222222, 0.2857142857, 0.1785714286)/12,     # based on values in XL
-  sigma_p= c(0.65, 0.4, 0.4, 0.89, 0.4, 0.4, 0.4),           # based on values in XL
-  sigma_p_timing= c(4,5,7,1,3,2,7),                        # based on values in XL
-  fish.mvt = TRUE,				                        # whether animals redistribute annually based on habitat preference
+  B0 = c(76500,333500,20000, ## Alcids, Eider, Porpoise
+         23492000,230000000,100000,4163000),	## Cod, Plaice, Lumpsucker, Turbot
+  r = c(0.06622516556, 0.111111111, 0.1333333333, ## Alcids, Eider, Porpoise
+        0.07407407407, 0.2222222222, 0.2857142857, 0.1785714286)/12, ## Cod, Plaice, Lumpsucker, Turbot
+  sigma_p= c(0.65, 0.4, 0.4, ## Alcids, Eider, Porpoise
+             0.89, 0.4, 0.4, 0.4), ## Cod, Plaice, Lumpsucker, Turbot
+  sigma_p_timing= c(4,5,7, ## Alcids, Eider, Porpoise
+                    1,3,2,7), ## Cod, Plaice, Lumpsucker, Turbot
+  fish.mvt = TRUE, # whether animals redistribute annually based on habitat preference
 
   ### Parameters controlling the vessel dynamics
   Nregion = c(2,2),         # nb of fishing regions for the fishermen (equal cut of grid along X and Y)
   Nvessels = 50,					  # nb vessels
   Tot_effort = 2000,				# end year nb of effort
   CV_effort = 0.2, 					# CV of effort around the yearly mean effort
-  qq_original = c(0.05,0.025,0.05,0.2,0.2,0.05,0.05),			  # the average catchability coef by species for ALL vessels (does not mean anything. just a scaler)
-  catch_trunc = c(1, 1, 1, 1, 0,0,0,0),			  # truncate value if 1 otherwise keep continuous
+  qq_original = c(0.05,0.025,
+                  0.05,0.2,0.2,0.05,0.05),			  # the average catchability coef by species for ALL vessels (does not mean anything. just a scaler)
+  catch_trunc = c(1, 1, 1,
+                  0,0,0,0),			  # truncate value if 1 otherwise keep continuous
   CV_vessel = 0.0001,					# the between vessel variability in mean catchability
   vessel_seeds = 10,        # this creates heterogeneity in the sampled vessels
   Effort_alloc_month = c(5,4,3,2,1,1,1,2,3,4,5,5),  # it is rescaled to sum to 1
