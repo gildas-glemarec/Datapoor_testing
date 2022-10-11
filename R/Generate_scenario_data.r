@@ -1,6 +1,8 @@
 
 ## Main function to generate data (the OM)
-Generate_scenario_data <- function(Sim_Settings, seed_input = 123, parallel = FALSE){
+Generate_scenario_data <- function(Sim_Settings,
+                                   seed_input = 123,
+                                   parallel = FALSE){
 
 
 	#### Set the bathymetry field
@@ -8,43 +10,90 @@ Generate_scenario_data <- function(Sim_Settings, seed_input = 123, parallel = FA
   ## scale sets the coarseness of spatial variation: the bigger, the more things are correlated in space.
   ## a small value e.g. 1 will make the map very patchy (each cell is independent of its neighboor)
 	set.seed(seed_input)
-	model_bathym <- RMgauss(var=Sim_Settings$SD_O^2, scale=Sim_Settings$SpatialScale)
-	map_grid <- expand.grid(X=Sim_Settings$Range_X, Y=Sim_Settings$Range_Y)
+	model_bathym <- RMgauss(var=Sim_Settings$SD_O^2,
+	                        scale=Sim_Settings$SpatialScale)
+	map_grid <- expand.grid(X=Sim_Settings$Range_X,
+	                        Y=Sim_Settings$Range_Y)
 	Bathym <- RFsimulate(model_bathym, x=map_grid)
-	data.bathym <- data.frame(ID = 1:nrow(map_grid), map_grid , depth=Bathym@data[,1])
-	data.bathym$depth = data.bathym$depth+abs(min(data.bathym$depth))	# to avoid getting negative depth here depth takes positive real number
+	data.bathym <- data.frame(ID = 1:nrow(map_grid),
+	                          map_grid,
+	                          depth=Bathym@data[,1])
+	data.bathym$depth = data.bathym$depth + abs(min(data.bathym$depth))	# to avoid getting negative depth here depth takes positive real number
 	# image.plot(Sim_Settings$Range_X, Sim_Settings$Range_Y, matrix(data.bathym$depth,nrow=length(Sim_Settings$Range_X), ncol=length(Sim_Settings$Range_Y)))
 
 	#### Set the pop mvt param from the simulation settings for each season (here month)
 	Par_mvt_adult <- lapply(1:12, function(x)
-	  rbind(Sim_Settings$Fish_dist_par1[x,], Sim_Settings$Fish_dist_par2, Sim_Settings$Fish_depth_par1[x,], Sim_Settings$Fish_depth_par2[x,]));
+	  rbind(Sim_Settings$Fish_dist_par1[x,],
+	        Sim_Settings$Fish_dist_par2,
+	        Sim_Settings$Fish_depth_par1[x,],
+	        Sim_Settings$Fish_depth_par2[x,]));
 
 	#### Calculate the movement matrices
 	if (Sim_Settings$parallel == FALSE) Mvt_mat_adult <- lapply(1:12, function(x)
-	  lapply(1:Sim_Settings$n_species, function(xxx) Mvt_matrix(Pop_param=Par_mvt_adult[[x]][,xxx], Depth_eff="TRUE", Dist_eff="TRUE", Lat_eff="TRUE", Dist_func=Sim_Settings$func_mvt_dist[xxx], Depth_func=Sim_Settings$func_mvt_depth[xxx], Lat_func=Sim_Settings$func_mvt_lat[xxx], Eastings=Sim_Settings$Range_X, Northings=Sim_Settings$Range_Y, data.bathym)))
+	  lapply(1:Sim_Settings$n_species,
+	         function(xxx) Mvt_matrix(Pop_param=Par_mvt_adult[[x]][,xxx],
+	                                  Depth_eff="TRUE",
+	                                  Dist_eff="TRUE",
+	                                  Lat_eff="TRUE",
+	                                  Dist_func=Sim_Settings$func_mvt_dist[xxx],
+	                                  Depth_func=Sim_Settings$func_mvt_depth[xxx],
+	                                  Lat_func=Sim_Settings$func_mvt_lat[xxx],
+	                                  Eastings=Sim_Settings$Range_X,
+	                                  Northings=Sim_Settings$Range_Y,
+	                                  data.bathym)))
 	if (Sim_Settings$parallel == TRUE) {
 	  cl <- makeCluster(getOption("cl.cores", 4))
-	  clusterExport(cl, varlist=list("Sim_Settings","Mvt_upd1","Mvt_matrix","Par_mvt_adult","data.bathym"))
+	  clusterExport(cl, varlist=list("Sim_Settings",
+	                                 "Mvt_upd1",
+	                                 "Mvt_matrix",
+	                                 "Par_mvt_adult",
+	                                 "data.bathym"))
 	  Mvt_mat_adult <- parLapply(cl, 1:12, function(x)
 	    lapply(1:Sim_Settings$n_species, function(xxx)
-	      Mvt_matrix(Pop_param=Par_mvt_adult[[x]][,xxx], Depth_eff="TRUE", Dist_eff="TRUE", Lat_eff="TRUE", Dist_func=Sim_Settings$func_mvt_dist[xxx], Depth_func=Sim_Settings$func_mvt_depth[xxx], Lat_func=Sim_Settings$func_mvt_lat[xxx], Eastings=Sim_Settings$Range_X, Northings=Sim_Settings$Range_Y, data.bathym)))
+	      Mvt_matrix(Pop_param=Par_mvt_adult[[x]][,xxx],
+	                 Depth_eff="TRUE",
+	                 Dist_eff="TRUE",
+	                 Lat_eff="TRUE",
+	                 Dist_func=Sim_Settings$func_mvt_dist[xxx],
+	                 Depth_func=Sim_Settings$func_mvt_depth[xxx],
+	                 Lat_func=Sim_Settings$func_mvt_lat[xxx],
+	                 Eastings=Sim_Settings$Range_X,
+	                 Northings=Sim_Settings$Range_Y,
+	                 data.bathym)))
 	}
 
 	#### Biomass dynamics: similarly to the work from Thorson et al but with more features
 	### 1. Determining the initial population distribution
-	Pop_adult <- sapply(1:Sim_Settings$n_species, function(x) Stable_pop_dist(Mvt_mat_adult[[1]][[x]], Sim_Settings$B0[x], Sim_Settings$Range_X, Sim_Settings$Range_Y))
+	Pop_adult <- sapply(1:Sim_Settings$n_species,
+	                    function(x) Stable_pop_dist(Mvt_mat_adult[[1]][[x]],
+	                                                Sim_Settings$B0[x],
+	                                                Sim_Settings$Range_X,
+	                                                Sim_Settings$Range_Y))
 
 	if(Sim_Settings$plotting==TRUE){
 		X11()
 		nf <- layout(matrix(1:6, nrow=3))
 		par(mar=c(1,1,1,1))
-		fields::image.plot(Sim_Settings$Range_X, Sim_Settings$Range_Y, matrix(data.bathym$depth,nrow=length(Sim_Settings$Range_X), ncol=length(Sim_Settings$Range_Y)))
-		for (sp in 1:Sim_Settings$n_species) fields::image.plot(Sim_Settings$Range_X, Sim_Settings$Range_Y, matrix(Pop_adult[,sp],length(Sim_Settings$Range_X),length(Sim_Settings$Range_Y)))
+		fields::image.plot(Sim_Settings$Range_X,
+		                   Sim_Settings$Range_Y,
+		                   matrix(data.bathym$depth,
+		                          nrow=length(Sim_Settings$Range_X),
+		                          ncol=length(Sim_Settings$Range_Y)))
+		for (sp in 1:Sim_Settings$n_species) fields::image.plot(Sim_Settings$Range_X,
+		                                                        Sim_Settings$Range_Y,
+		                                                        matrix(Pop_adult[,sp],
+		                                                               length(Sim_Settings$Range_X),
+		                                                               length(Sim_Settings$Range_Y)))
 	}
 
-	Biomass <- array(NA, dim=c(Sim_Settings$n_years, 12, nrow(data.bathym), Sim_Settings$n_species))
+	Biomass <- array(NA,
+	                 dim=c(Sim_Settings$n_years,
+	                           12,
+	                           nrow(data.bathym),
+	                           Sim_Settings$n_species))
 	Biomass[1,1,,] <- Pop_adult
-	Biomass[1,1,,] <- apply(Biomass[1,1,,], 2,function(x) replace(x, which(x<=0), 0))
+	Biomass[1,1,,] <- apply(Biomass[1,1,,], 2,
+	                        function(x) replace(x, which(x<=0), 0))
 
 	### 2. Structuring the vessel dynamics
 

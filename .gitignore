@@ -4,3 +4,6 @@
 .Ruserdata
 *.tiff
 R/old
+R/Generate_scenario_data.r
+R/test_OM_EM_DK.R
+R/Generate_scenario_data.r

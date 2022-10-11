@@ -43,7 +43,10 @@ Sim1 <- list(
   # depth.restriction = c(50,150),	# location of MPA
 
   ### Species parameters
-  n_species  = 8, ## bird1, bird2, bird3, mammal1, cod, plaice, lumpsucker, turbot
+  n_species  = 8, ## Alcidae, Anatidae, Gavidae, Porpoise, cod, plaice, lumpsucker, turbot
+  ## Note that for cod, the differences between the stocks are important to take
+  ## into account, so it might be preferable to limit the study area to e.g., the
+  ## Western Baltic (incl. Kattegat)
   price_fish = matrix(rep(c(-1,-1,-1,-50,25,10,40,40),15), ncol=8, byrow=T),   # random
 
   ## Fish habitat preference/movement control parameters
